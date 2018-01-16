@@ -30,6 +30,8 @@ Host *
 SSHEOF
 
 chown -R vagrant:vagrant /home/vagrant/.ssh/
+apt-get update
+apt-get install -y ansible
 EOF
   end
 
