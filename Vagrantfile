@@ -35,7 +35,6 @@ apt-get install software-properties-common
 apt-add-repository ppa:ansible/ansible
 apt-get update
 apt-get install -y ansible
-cp /vagrant/ansible.cfg /etc/ansible/
 ansible-playbook /vagrant/control.yml
 EOF
   end
