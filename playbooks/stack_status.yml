@@ -24,7 +24,7 @@
       command: service mysql status
 
     - name: verify mysql is listening on 3306
-      wait_for: host={{ ansible_eth0.ipv4.address }} port=3306 timeout=1
+      wait_for: host={{ facter_ipaddress_eth1 }} port=3306 timeout=1
 
 - hosts: control
   become: true
@@ -36,7 +36,7 @@
 
     - fail: msg="index failed to return content"
       when: "'Hello, from sunny' not in item.content"
-      with_items: "{{lb_index.results}}"
+      with_items: "{{ lb_index.results }}"
 
     - name: verify end-to-end database response
       uri: url=http://{{ item }}/db return_content=yes
@@ -45,7 +45,7 @@
 
     - fail: msg="db failed to return content"
       when: "'Database Connected from' not in item.content"
-      with_items: "{{lb_db.results}}"
+      with_items: "{{ lb_db.results }}"
 
 - hosts: loadbalancer
   become: true
@@ -57,7 +57,7 @@
 
     - fail: msg="index failed to return content"
       when: "'Hello, from sunny' not in item.content"
-      with_items: "{{app_index.results}}"
+      with_items: "{{ app_index.results }}"
 
     - name: verify backend database response
       uri: url=http://{{ item }}/db return_content=yes
@@ -66,4 +66,4 @@
 
     - fail: msg="db failed to return content"
       when: "'Database Connected from' not in item.content"
-      with_items: "{{app_db.results}}"
+      with_items: "{{ app_db.results }}"
