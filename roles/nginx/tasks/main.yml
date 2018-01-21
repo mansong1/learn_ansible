@@ -1,29 +1,29 @@
 ---
-- name: install tools
-  apt: name={{item}} state=present update_cache=yes
-  with_items:
-    - nginx
-    - python-httplib2
+  - name: install tools
+    apt: name={{item}} state=present update_cache=yes
+    with_items:
+      - nginx
+      - python-httplib2
 
-- name: configure nginx sites
-  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ item.key }} mode=0644
-  with_dict: sites
-  notify: restart nginx
+  - name: configure nginx sites
+    template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ item.key }} mode=0644
+    with_dict: sites
+    notify: restart nginx
 
-- name: get active sites
-  shell: ls -1 /etc/sites-enabled
-  register: active
+  - name: get active sites
+    shell: ls -1 /etc/sites-enabled
+    register: active
 
-- name: de-activate sites
-  file: path=/etc/nginx/sites-enabled/{{ item }} state=absent
-  with_items: active.stdout_lines
-  when: item not in sites
-  notify: restart nginx
-      
-- name: activate nginx sites
-  file: src=/etc/nginx/sites-available/{{ item.key }} dest=/etc/nginx/sites-enabled/{{ item.key }} state=link
-  with_dict: sites
-  notify: restart nginx
+  - name: de-activate sites
+    file: path=/etc/nginx/sites-enabled/{{ item }} state=absent
+    with_items: active.stdout_lines
+    when: item not in sites
+    notify: restart nginx
+        
+  - name: activate nginx sites
+    file: src=/etc/nginx/sites-available/{{ item.key }} dest=/etc/nginx/sites-enabled/{{ item.key }} state=link
+    with_dict: sites
+    notify: restart nginx
 
   - name: ensure nginx service is running
-  service: name=nginx state=started enabled=yes
+    service: name=nginx state=started enabled=yes
